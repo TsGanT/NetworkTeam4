@@ -1,9 +1,11 @@
-import asyncio, sys
+import asyncio
 import playground
 
 from playground.network.packet import PacketType
 from playground.network.protocols.vsockets import VNICDumpProtocol
 from playground.network.protocols.packets.switching_packets import WirePacket
+
+from Game_Bank.datasave import *
 
 
 class Protocol_factory(VNICDumpProtocol):
@@ -20,11 +22,18 @@ class Protocol_factory(VNICDumpProtocol):
                 print(packet.sourcePort)
                 print(packet.destination)
                 print(packet.destinationPort)
-                print("{}".format(packet.fragData))
                 print(packet.data)
+                if "OpenSession".encode() in packet.data:
+                    print(packet.source)
+                    print(packet.sourcePort)
+                    print(packet.destination)
+                    print(packet.destinationPort)
+                    print(packet.data)
+
 
 
 if __name__ == "__main__":
+    createFile()
     loop = asyncio.get_event_loop()
     # Each client connection will create a new protocol instance
     coro = playground.connect.raw_vnic_connection(lambda: Protocol_factory(loop), vnicName="default")
